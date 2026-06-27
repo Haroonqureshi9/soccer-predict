@@ -45,3 +45,23 @@ accuracy = accuracy_score(y_test, predictions)
 
 print(f"Model accuracy: {accuracy:.2%}")
 print(f"Baseline (always home_win): 49%")
+
+def predict_match(home_team, away_team):
+    home_rate = win_rate.get(home_team, 0)
+    away_rate = win_rate.get(away_team, 0)
+
+    match_features = pd.DataFrame(
+        [[home_rate, away_rate, 0]],
+        columns=["home_win_rate", "away_win_rate", "neutral_num"],
+    )
+
+    probabilities = model.predict_proba(match_features)[0]
+    outcomes = model.classes_
+
+    print(f"\n{home_team} (home) vs {away_team} (away)")
+    for outcome, prob in zip(outcomes, probabilities):
+        print(f"  {outcome}: {prob:.1%}")
+
+
+predict_match("Portugal", "Argentina")
+predict_match("Brazil", "San Marino")
