@@ -15,9 +15,21 @@ def get_result(row):
         return "draw"
 
 matches["result"] = matches.apply(get_result, axis=1)
+
+home_games = matches.groupby("home_team").size()
+home_wins = matches[matches["result"] == "home_win"].groupby("home_team").size()
+away_games = matches.groupby("away_team").size()
+away_wins = matches[matches["result"] == "away_win"].groupby("away_team").size()
+
+total_games = home_games.add(away_games, fill_value=0)
+total_wins = home_wins.add(away_wins, fill_value=0)
+win_rate = (total_wins / total_games).fillna(0)
+
+matches["home_win_rate"] = matches["home_team"].map(win_rate)
+matches["away_win_rate"] = matches["away_team"].map(win_rate)
 matches["neutral_num"] = matches["neutral"].astype(int)
 
-features = ["neutral_num"]
+features = ["home_win_rate", "away_win_rate", "neutral_num"]
 X = matches[features]
 y = matches["result"]
 
