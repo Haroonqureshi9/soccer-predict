@@ -63,5 +63,28 @@ def predict_match(home_team, away_team):
         print(f"  {outcome}: {prob:.1%}")
 
 
-predict_match("Portugal", "Argentina")
-predict_match("Brazil", "San Marino")
+all_teams = set(matches["home_team"]).union(set(matches["away_team"]))
+team_lookup = {team.lower(): team for team in all_teams}
+
+print("\n--- Match Predictor ---")
+print("Type two team names to get a prediction, or 'quit' to exit.")
+
+while True:
+    home_team = input("\nHome team: ").strip()
+    if home_team.lower() == "quit":
+        print("Goodbye!")
+        break
+
+    away_team = input("Away team: ").strip()
+    if away_team.lower() == "quit":
+        print("Goodbye!")
+        break
+
+    if home_team.lower() not in team_lookup:
+        print(f"'{home_team}' not found in the data. Check the spelling.")
+        continue
+    if away_team.lower() not in team_lookup:
+        print(f"'{away_team}' not found in the data. Check the spelling.")
+        continue
+
+    predict_match(team_lookup[home_team.lower()], team_lookup[away_team.lower()])
